@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../repoMinerDownloader/.idea/modules/repoMinerDownloader.iml" filepath="$PROJECT_DIR$/../repoMinerDownloader/.idea/modules/repoMinerDownloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../repoMinerDownloader/.idea/modules/repoMinerDownloader_main.iml" filepath="$PROJECT_DIR$/../repoMinerDownloader/.idea/modules/repoMinerDownloader_main.iml" group="repoMinerDownloader" />
+      <module fileurl="file://$PROJECT_DIR$/../repoMinerDownloader/.idea/modules/repoMinerDownloader_test.iml" filepath="$PROJECT_DIR$/../repoMinerDownloader/.idea/modules/repoMinerDownloader_test.iml" group="repoMinerDownloader" />
+    </modules>
+  </component>
+</project>
