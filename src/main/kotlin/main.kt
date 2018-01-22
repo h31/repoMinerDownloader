@@ -10,7 +10,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.Charset
-import java.util.HashMap
+import java.util.*
+
 
 /**
  * Created by Neverland on 18.01.2018.
@@ -72,28 +73,47 @@ fun main(args: Array<String>) {
 
     }
 
-    val QUEUE_NAME = "repositoryDownloadTasksQueue";
+    val DOWNLOAD_TASKS_QUEUE_NAME = "repositoryDownloadTasksQueue";
+    val RESPONSE_QUEUE_NAME = "responseQueue";
 
     val factory = ConnectionFactory()
     factory.host = "localhost"
     val brokerConnection = factory.newConnection()
-    val channel = brokerConnection.createChannel()
+    val downloadTasksChannel = brokerConnection.createChannel()
+
+    val responseChannel = brokerConnection.createChannel()
+
+    //val downloadTasksQueue=
 
     val args = HashMap<String, Any>()
-    args.put("x-max-length", 500000)
-    channel.queueDeclare(QUEUE_NAME, false, false, false, args)
+    args.put("x-max-length", 100)
+
+    val downloadQueue=downloadTasksChannel.queueDeclare( DOWNLOAD_TASKS_QUEUE_NAME, false, false, false, args)
+
+    val responseQueue=responseChannel.queueDeclare( RESPONSE_QUEUE_NAME, false, false, false, null)
 
     println(" [*] Waiting for messages. To exit press CTRL+C")
     var numberOfJavaRepositories = 0
 
-    val consumer = object : DefaultConsumer(channel) {
+    var allIterationsCounter=0
+    //var trigger=false
+
+    val consumer = object : DefaultConsumer(downloadTasksChannel) {
         @Throws(IOException::class)
         override fun handleDelivery(consumerTag: String, envelope: Envelope,
                                     properties: AMQP.BasicProperties, body: ByteArray) {
+            allIterationsCounter++;
+            println(downloadQueue.messageCount)
+
+/*            if (downloadQueue.messageCount == 100)
+            trigger=true*/
+
+
             println("$numberOfJavaRepositories iteration")
             val message = String(body, Charset.forName("UTF-8"))
             if (message == "stop") {
-                channel.close()
+                downloadTasksChannel.close()
+                responseChannel.close()
                 brokerConnection.close()
                 println("$numberOfJavaRepositories were recognized.")
             } else {
@@ -109,10 +129,11 @@ fun main(args: Array<String>) {
                 val client = OkHttpClient()
                 val request = Request.Builder().url(downloadUrl).build()
                 val response = client.newCall(request).execute()
-                if (!response.isSuccessful) {
-                    channel.close()
-                    brokerConnection.close()
-                    throw IOException("Failed to download file: " + response)
+                if (!response.isSuccessful) {                                   //TODO: pretty rough
+                    println("Unsuccessful response: "+ response)
+                    //downloadTasksChannel.close()
+                    //brokerConnection.close()
+                    //throw IOException("Failed to download file: " + response)
                 } else {
 
                     val fileOutputStream = FileOutputStream("E:/MinedProjects" + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
@@ -140,11 +161,18 @@ fun main(args: Array<String>) {
                     }
 
                     numberOfJavaRepositories++
+
                 }
+
+               /* if ((downloadQueue.messageCount == 0)&&
+                        trigger){
+                    responseChannel.basicPublish("", RESPONSE_QUEUE_NAME, null, "consumed".toByteArray())
+                    trigger=false
+                }*/
             }
 
         }
     }
-    channel.basicConsume(QUEUE_NAME, true, consumer)
+    downloadTasksChannel.basicConsume(DOWNLOAD_TASKS_QUEUE_NAME, true, consumer)
 
 }
