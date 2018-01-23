@@ -52,6 +52,11 @@ object Library : Table() {
     var groupName = varchar("group_name", 250)
 }*/
 
+val TASKS_QUEUE_NAME = "repositoryDownloadTasksQueue";
+val ACK_QUEUE_NAME = "ackQueue";
+
+var messageCounter=0
+
 fun main(args: Array<String>) {
 
     println("repoMinerDownloader: I'm starting now...")
@@ -73,50 +78,34 @@ fun main(args: Array<String>) {
 
     }
 
-    val DOWNLOAD_TASKS_QUEUE_NAME = "repositoryDownloadTasksQueue";
-    val RESPONSE_QUEUE_NAME = "responseQueue";
-
     val factory = ConnectionFactory()
     factory.host = "localhost"
-    val brokerConnection = factory.newConnection()
-    val downloadTasksChannel = brokerConnection.createChannel()
+    val connection = factory.newConnection()
 
-    val responseChannel = brokerConnection.createChannel()
-
-    //val downloadTasksQueue=
+    val channel = connection.createChannel()
+    val responseChannel = connection.createChannel()
 
     val args = HashMap<String, Any>()
-    args.put("x-max-length", 100)
-
-    val downloadQueue=downloadTasksChannel.queueDeclare( DOWNLOAD_TASKS_QUEUE_NAME, false, false, false, args)
-
-    val responseQueue=responseChannel.queueDeclare( RESPONSE_QUEUE_NAME, false, false, false, null)
+    args.put("x-max-length", 200)
+    channel.queueDeclare(TASKS_QUEUE_NAME, false, false, false, args)
+    channel.queueDeclare(ACK_QUEUE_NAME, false, false, false, null)
 
     println(" [*] Waiting for messages. To exit press CTRL+C")
-    var numberOfJavaRepositories = 0
 
-    var allIterationsCounter=0
-    //var trigger=false
-
-    val consumer = object : DefaultConsumer(downloadTasksChannel) {
+    val consumer = object : DefaultConsumer(channel) {
         @Throws(IOException::class)
         override fun handleDelivery(consumerTag: String, envelope: Envelope,
                                     properties: AMQP.BasicProperties, body: ByteArray) {
-            allIterationsCounter++;
-            println(downloadQueue.messageCount)
-
-/*            if (downloadQueue.messageCount == 100)
-            trigger=true*/
-
-
-            println("$numberOfJavaRepositories iteration")
             val message = String(body, Charset.forName("UTF-8"))
+
+            println(" [x] Received '$message'")
+
             if (message == "stop") {
-                downloadTasksChannel.close()
+                channel.close()
                 responseChannel.close()
-                brokerConnection.close()
-                println("$numberOfJavaRepositories were recognized.")
-            } else {
+                connection.close()
+                return
+            }else{
 
                 val downloadUrl = message;
 
@@ -144,35 +133,33 @@ fun main(args: Array<String>) {
                         logger.addLogger(StdOutSqlLogger)
 
                         val project=Project.insert {
-                             it[name] = projectName
-                             it[url] = downloadUrl.substringBeforeLast("/")
-                             it[lastDownloadDate] = System.currentTimeMillis()
+                            it[name] = projectName
+                            it[url] = downloadUrl.substringBeforeLast("/")
+                            it[lastDownloadDate] = System.currentTimeMillis()
                         }
 
                         val projectVersion=ProjectVersion.insert {
                             it[projectId] = project[id]
                             it[versionHash] = downloadUrl.substringAfterLast("-")
                         }
-                        
+
                         Project.update({Project.id eq project[Project.id]}){
                             it[downloadedProjectVersionId]=projectVersion[id]
                         }
 
                     }
 
-                    numberOfJavaRepositories++
-
                 }
-
-               /* if ((downloadQueue.messageCount == 0)&&
-                        trigger){
-                    responseChannel.basicPublish("", RESPONSE_QUEUE_NAME, null, "consumed".toByteArray())
-                    trigger=false
-                }*/
             }
 
+            messageCounter++
+
+            println("counter="+messageCounter)
+
+            if(messageCounter%100==0) {
+                responseChannel.basicPublish("", ACK_QUEUE_NAME, null, "consumed".toByteArray())
+            }
         }
     }
-    downloadTasksChannel.basicConsume(DOWNLOAD_TASKS_QUEUE_NAME, true, consumer)
-
+    channel.basicConsume(TASKS_QUEUE_NAME, true, consumer)
 }
