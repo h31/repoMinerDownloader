@@ -1,7 +1,5 @@
-import com.rabbitmq.client.AMQP
-import com.rabbitmq.client.ConnectionFactory
-import com.rabbitmq.client.DefaultConsumer
-import com.rabbitmq.client.Envelope
+import com.rabbitmq.client.*
+import com.rabbitmq.client.impl.ForgivingExceptionHandler
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
 import okhttp3.OkHttpClient
@@ -21,6 +19,10 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import com.sun.deploy.trace.Trace.flush
+import java.io.ByteArrayOutputStream
+
+
 
 
 /**
@@ -64,6 +66,8 @@ val TAG="repoMinerDownloader: "
 
 val TASKS_QUEUE_NAME = "repositoryDownloadTasksQueue";
 val ACK_QUEUE_NAME = "ackQueue";
+var channel: Channel?=null
+var responseChannel:Channel?=null
 
 var messageCounter=0
 
@@ -74,7 +78,7 @@ class MyArgs(parser: ArgParser) {
     val user by parser.storing("login for database to store information about projects")
     val password by parser.storing("password for database to store information about projects")
 
-    val folder by parser.storing("system folder to store projcts' code")
+    val folder by parser.storing("system folder to store projects' code")
 
 }
 var fileLogger: Logger? = null
@@ -91,7 +95,6 @@ fun main(args: Array<String>) {
     }
 
     fileLogger = Logger.getLogger(TAG+"Log")
-
 
     try {
 
@@ -119,16 +122,30 @@ fun main(args: Array<String>) {
     val factory = ConnectionFactory()
     factory.host = "localhost"
     factory.requestedHeartbeat = 0
+    factory.exceptionHandler=object : ForgivingExceptionHandler() {
+
+        override fun log(message: String?, e: Throwable?) {
+            fileLogger!!.log(Level.SEVERE,"Consumption failed with reason: "+ message)
+        }
+
+        override fun handleConsumerException(channel: Channel?, exception: Throwable?, consumer: Consumer?, consumerTag: String?, methodName: String?) {
+            super.handleConsumerException(channel, exception, consumer, consumerTag, methodName)
+
+            if(exception!!.javaClass.canonicalName == "java.lang.OutOfMemoryError")
+                countMessages() //Можно было бы занести реализацию внутрь в случае реализации в виде полноценного
+            // класса-наследника
+        }
+    }
 
     val connection = factory.newConnection()
 
-    val channel = connection.createChannel()
-    val responseChannel = connection.createChannel()
+    channel = connection.createChannel()
+    responseChannel = connection.createChannel()
 
     val args = HashMap<String, Any>()
     args.put("x-max-length", 200)
-    channel.queueDeclare(TASKS_QUEUE_NAME, false, false, false, args)
-    channel.queueDeclare(ACK_QUEUE_NAME, false, false, false, null)
+    channel!!.queueDeclare(TASKS_QUEUE_NAME, false, false, false, args)
+    channel!!.queueDeclare(ACK_QUEUE_NAME, false, false, false, null)
 
     val consumer = object : DefaultConsumer(channel) {
         @Throws(IOException::class)
@@ -138,13 +155,19 @@ fun main(args: Array<String>) {
 
             fileLogger!!.log(Level.INFO,"Received project link: $message, message number: $messageCounter")
 
+            if (runRequest(message)) return
+
+            countMessages()
+        }
+
+        private fun runRequest(message: String): Boolean {
             if (message == "stop") {
-                channel.close()
-                responseChannel.close()
+                channel!!.close()
+                responseChannel!!.close()
                 connection.close()
                 fileHandler!!.close()
-                return
-            }else{
+                return true
+            } else {
 
                 val downloadUrl = message;
                 val projectName = downloadUrl.substringBeforeLast("/").substringAfterLast("/")
@@ -152,36 +175,56 @@ fun main(args: Array<String>) {
                 val client = OkHttpClient()
                 val request = Request.Builder().url(downloadUrl).build()
 
-                fileLogger!!.log(Level.INFO,"Start downloading...")
+                fileLogger!!.log(Level.INFO, "Start downloading...")
                 val response = client.newCall(request).execute()
 
                 if (!response.isSuccessful) {
 
                     (response.body() as ResponseBody).close()
 
-                    fileLogger!!.log(Level.SEVERE,"Request failed with reason: "+ response)
+                    fileLogger!!.log(Level.SEVERE, "Request failed with reason: " + response)
                 } else {
 
-                    fileLogger!!.log(Level.INFO,"GitProject has been downloaded.")
+                    val bytesInputStream = (response.body()!! as ResponseBody).byteStream()
 
-                    val data=response.body()!!.bytes()
+                    val bytesOutputStream = ByteArrayOutputStream()
 
-                    val zipInputStream= ZipInputStream(ByteArrayInputStream(data))
+                    val byteBatchBuffer = ByteArray(16384)
+                    var nRead: Int = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
 
-                    var entry: ZipEntry?=zipInputStream.getNextEntry()
 
-                    var isJavaRepository=false
 
-                    while (entry != null){
+                    while (nRead != -1) {
 
-                        if ((!entry.isDirectory)&&(entry.name.endsWith(".java"))){
-                            isJavaRepository=true
-                            break
-                        }
-                        entry=zipInputStream.getNextEntry()
+                        bytesOutputStream.write(byteBatchBuffer, 0, nRead)
+                        nRead = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
                     }
 
-                    fileLogger!!.log(Level.INFO,"Java project: ${if (isJavaRepository) "yes, number: $realJavaReposCounter" else "no"}.")
+                    val data = bytesOutputStream.toByteArray()
+
+                    bytesInputStream.close()
+                    bytesOutputStream.close()
+
+                    (response.body() as ResponseBody).close()
+
+                    fileLogger!!.log(Level.INFO, "GitProject has been downloaded.")
+
+                    val zipInputStream = ZipInputStream(ByteArrayInputStream(data))
+
+                    var entry: ZipEntry? = zipInputStream.getNextEntry()
+
+                    var isJavaRepository = false
+
+                    while (entry != null) {
+
+                        if ((!entry.isDirectory) && (entry.name.endsWith(".java"))) {
+                            isJavaRepository = true
+                            break
+                        }
+                        entry = zipInputStream.getNextEntry()
+                    }
+
+                    fileLogger!!.log(Level.INFO, "Java project: ${if (isJavaRepository) "yes, number: $realJavaReposCounter" else "no"}.")
 
                     if (isJavaRepository) {
 
@@ -191,7 +234,6 @@ fun main(args: Array<String>) {
                         fileOutputStream.write(data)
                         fileOutputStream.close()
 
-                        (response.body() as ResponseBody).close()
 
                         fileLogger!!.log(Level.INFO, "GitProject's files has been stored on disk.")
 
@@ -217,14 +259,18 @@ fun main(args: Array<String>) {
                     }
                 }
             }
-
-            messageCounter++
-
-            if(messageCounter%100==0) {
-                fileLogger!!.log(Level.INFO,"Acknowledgment has been sent (to approve consumption of 100 messages).")
-                responseChannel.basicPublish("", ACK_QUEUE_NAME, null, "consumed".toByteArray())
-            }
+            return false
         }
     }
-    channel.basicConsume(TASKS_QUEUE_NAME, true, consumer)
+    channel!!.basicConsume(TASKS_QUEUE_NAME, true, consumer)
+}
+
+//TODO: structure (default message handling -> connection factory?)
+private fun countMessages() {
+    messageCounter++
+
+    if (messageCounter % 100 == 0) {
+        fileLogger!!.log(Level.INFO, "Acknowledgment has been sent (to approve consumption of 100 messages).")
+        responseChannel!!.basicPublish("", ACK_QUEUE_NAME, null, "consumed".toByteArray())
+    }
 }

@@ -138,11 +138,138 @@
       <file leaf-file-name="main.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../repoMinerDownloader/src/main/kotlin/main.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="119" column="30" lean-forward="false" selection-start-line="119" selection-start-column="30" selection-end-line="119" selection-end-column="30" />
+            <state relative-caret-position="442">
+              <caret line="157" column="15" lean-forward="false" selection-start-line="157" selection-start-column="15" selection-end-line="157" selection-end-column="15" />
               <folding>
-                <element signature="e#0#817#0" expanded="true" />
+                <element signature="e#0#825#0" expanded="true" />
                 <element signature="n#!!doc;n#GitProject#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConnectionFactory.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/ConnectionFactory.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-9709">
+              <caret line="700" column="39" lean-forward="false" selection-start-line="700" selection-start-column="32" selection-end-line="700" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConnectionFactory.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/646bc476bf4e5477edbb2fb92107130512194585/amqp-client-5.1.1.jar!/com/rabbitmq/client/ConnectionFactory.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="401">
+              <caret line="92" column="23" lean-forward="true" selection-start-line="92" selection-start-column="23" selection-end-line="92" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Connection.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/Connection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="197">
+              <caret line="123" column="12" lean-forward="false" selection-start-line="123" selection-start-column="12" selection-end-line="123" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OutputStream.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/../Java/jdk1.8.0_131/src.zip!/java/io/OutputStream.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1938">
+              <caret line="137" column="16" lean-forward="false" selection-start-line="137" selection-start-column="16" selection-end-line="137" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#5579#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Response.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.9.1/7539531ecf9b6e082fcab195f0835d4f69ead95e/okhttp-3.9.1-sources.jar!/okhttp3/Response.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2159">
+              <caret line="175" column="28" lean-forward="false" selection-start-line="175" selection-start-column="28" selection-end-line="175" selection-end-column="28" />
+              <folding>
+                <element signature="e#0#14681#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#3329#3330#0" expanded="false" />
+                <element signature="e#3353#3354#0" expanded="false" />
+                <element signature="e#3493#3494#0" expanded="false" />
+                <element signature="e#3518#3519#0" expanded="false" />
+                <element signature="e#3580#3581#0" expanded="false" />
+                <element signature="e#3601#3602#0" expanded="false" />
+                <element signature="e#3778#3779#0" expanded="false" />
+                <element signature="e#3820#3821#0" expanded="false" />
+                <element signature="e#3891#3892#0" expanded="false" />
+                <element signature="e#3915#3916#0" expanded="false" />
+                <element signature="e#4093#4094#0" expanded="false" />
+                <element signature="e#4119#4120#0" expanded="false" />
+                <element signature="e#4165#4166#0" expanded="false" />
+                <element signature="e#4202#4203#0" expanded="false" />
+                <element signature="e#4251#4252#0" expanded="false" />
+                <element signature="e#4286#4287#0" expanded="false" />
+                <element signature="e#4490#4491#0" expanded="false" />
+                <element signature="e#4514#4515#0" expanded="false" />
+                <element signature="e#6161#6162#0" expanded="false" />
+                <element signature="e#6195#6196#0" expanded="false" />
+                <element signature="e#6839#6840#0" expanded="false" />
+                <element signature="e#6871#6872#0" expanded="false" />
+                <element signature="e#7192#7193#0" expanded="false" />
+                <element signature="e#7222#7223#0" expanded="false" />
+                <element signature="e#7583#7584#0" expanded="false" />
+                <element signature="e#7613#7614#0" expanded="false" />
+                <element signature="e#8959#8960#0" expanded="false" />
+                <element signature="e#8995#8996#0" expanded="false" />
+                <element signature="e#9309#9310#0" expanded="false" />
+                <element signature="e#9350#9351#0" expanded="false" />
+                <element signature="e#10439#10440#0" expanded="false" />
+                <element signature="e#10484#10485#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RealResponseBody.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.9.1/7539531ecf9b6e082fcab195f0835d4f69ead95e/okhttp-3.9.1-sources.jar!/okhttp3/internal/http/RealResponseBody.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="22" column="45" lean-forward="false" selection-start-line="22" selection-start-column="45" selection-end-line="22" selection-end-column="45" />
+              <folding>
+                <element signature="e#0#1590#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#1487#1488#0" expanded="false" />
+                <element signature="e#1517#1518#0" expanded="false" />
+                <element signature="e#1563#1564#0" expanded="false" />
+                <element signature="e#1586#1587#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ResponseBody.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.9.1/7539531ecf9b6e082fcab195f0835d4f69ead95e/okhttp-3.9.1-sources.jar!/okhttp3/ResponseBody.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1751">
+              <caret line="130" column="5" lean-forward="false" selection-start-line="130" selection-start-column="5" selection-end-line="130" selection-end-column="5" />
+              <folding>
+                <element signature="e#0#9465#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#4494#4495#0" expanded="false" />
+                <element signature="e#4533#4534#0" expanded="false" />
+                <element signature="e#7022#7023#0" expanded="false" />
+                <element signature="e#7059#7060#0" expanded="false" />
+                <element signature="e#8315#8316#0" expanded="false" />
+                <element signature="e#8351#8352#0" expanded="false" />
+                <element signature="e#8398#8399#0" expanded="false" />
+                <element signature="e#8436#8437#0" expanded="false" />
+                <element signature="e#8486#8487#0" expanded="false" />
+                <element signature="e#8518#8519#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -160,189 +287,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Envelope.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/Envelope.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="44" column="16" lean-forward="false" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#2967#0" expanded="false" />
-                <element signature="e#1747#1748#0" expanded="false" />
-                <element signature="e#1782#1783#0" expanded="false" />
-                <element signature="e#2189#2190#0" expanded="false" />
-                <element signature="e#2222#2223#0" expanded="false" />
-                <element signature="e#2373#2374#0" expanded="false" />
-                <element signature="e#2405#2406#0" expanded="false" />
-                <element signature="e#2552#2553#0" expanded="false" />
-                <element signature="e#2586#2587#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ChannelN.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/impl/ChannelN.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18785">
-              <caret line="1160" column="16" lean-forward="false" selection-start-line="1160" selection-start-column="16" selection-end-line="1160" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#61264#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#5736#5737#0" expanded="false" />
-                <element signature="e#5781#5782#0" expanded="false" />
-                <element signature="e#6265#6266#0" expanded="false" />
-                <element signature="e#6320#6321#0" expanded="false" />
-                <element signature="e#6376#6377#0" expanded="false" />
-                <element signature="e#6415#6416#0" expanded="false" />
-                <element signature="e#6493#6494#0" expanded="false" />
-                <element signature="e#6539#6540#0" expanded="false" />
-                <element signature="e#7286#7287#0" expanded="false" />
-                <element signature="e#7342#7343#0" expanded="false" />
-                <element signature="e#7399#7400#0" expanded="false" />
-                <element signature="e#7439#7440#0" expanded="false" />
-                <element signature="e#9730#9731#0" expanded="false" />
-                <element signature="e#9768#9769#0" expanded="false" />
-                <element signature="e#9976#9977#0" expanded="false" />
-                <element signature="e#10018#10019#0" expanded="false" />
-                <element signature="e#11574#11575#0" expanded="false" />
-                <element signature="e#11622#11623#0" expanded="false" />
-                <element signature="e#11659#11660#0" expanded="false" />
-                <element signature="e#11714#11715#0" expanded="false" />
-                <element signature="e#59840#59841#0" expanded="false" />
-                <element signature="e#59879#59880#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AMQImpl.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/impl/AMQImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24888">
-              <caret line="1510" column="60" lean-forward="false" selection-start-line="1510" selection-start-column="60" selection-end-line="1510" selection-end-column="60" />
-              <folding>
-                <element signature="e#0#140905#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#20988#20989#0" expanded="false" />
-                <element signature="e#21036#21037#0" expanded="false" />
-                <element signature="e#23411#23412#0" expanded="false" />
-                <element signature="e#23459#23460#0" expanded="false" />
-                <element signature="e#26913#26914#0" expanded="false" />
-                <element signature="e#26965#26966#0" expanded="false" />
-                <element signature="e#28175#28176#0" expanded="false" />
-                <element signature="e#28227#28228#0" expanded="false" />
-                <element signature="e#32263#32264#0" expanded="false" />
-                <element signature="e#32311#32312#0" expanded="false" />
-                <element signature="e#35757#35758#0" expanded="false" />
-                <element signature="e#35809#35810#0" expanded="false" />
-                <element signature="e#41732#41733#0" expanded="false" />
-                <element signature="e#41780#41781#0" expanded="false" />
-                <element signature="e#45056#45057#0" expanded="false" />
-                <element signature="e#45104#45105#0" expanded="false" />
-                <element signature="e#49453#49454#0" expanded="false" />
-                <element signature="e#49501#49502#0" expanded="false" />
-                <element signature="e#53870#53871#0" expanded="false" />
-                <element signature="e#53918#53919#0" expanded="false" />
-                <element signature="e#64089#64090#0" expanded="false" />
-                <element signature="e#64137#64138#0" expanded="false" />
-                <element signature="e#66602#66603#0" expanded="false" />
-                <element signature="e#66666#66667#0" expanded="false" />
-                <element signature="e#70519#70520#0" expanded="false" />
-                <element signature="e#70583#70584#0" expanded="false" />
-                <element signature="e#75364#75365#0" expanded="false" />
-                <element signature="e#75412#75413#0" expanded="false" />
-                <element signature="e#78353#78354#0" expanded="false" />
-                <element signature="e#78401#78402#0" expanded="false" />
-                <element signature="e#105715#105716#0" expanded="false" />
-                <element signature="e#105769#105770#0" expanded="false" />
-                <element signature="e#107004#107005#0" expanded="false" />
-                <element signature="e#107058#107059#0" expanded="false" />
-                <element signature="e#108743#108744#0" expanded="false" />
-                <element signature="e#108791#108792#0" expanded="false" />
-                <element signature="e#111707#111708#0" expanded="false" />
-                <element signature="e#111755#111756#0" expanded="false" />
-                <element signature="e#112684#112685#0" expanded="false" />
-                <element signature="e#112732#112733#0" expanded="false" />
-                <element signature="e#113650#113651#0" expanded="false" />
-                <element signature="e#113698#113699#0" expanded="false" />
-                <element signature="e#114627#114628#0" expanded="false" />
-                <element signature="e#114675#114676#0" expanded="false" />
-                <element signature="e#115603#115604#0" expanded="false" />
-                <element signature="e#115651#115652#0" expanded="false" />
-                <element signature="e#116590#116591#0" expanded="false" />
-                <element signature="e#116638#116639#0" expanded="false" />
-                <element signature="e#117198#117199#0" expanded="false" />
-                <element signature="e#117250#117251#0" expanded="false" />
-                <element signature="e#118928#118929#0" expanded="false" />
-                <element signature="e#118976#118977#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AutorecoveringChannel.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/impl/recovery/AutorecoveringChannel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6868">
-              <caret line="434" column="16" lean-forward="false" selection-start-line="434" selection-start-column="16" selection-end-line="434" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#36110#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#2272#2273#0" expanded="false" />
-                <element signature="e#2322#2323#0" expanded="false" />
-                <element signature="e#2377#2378#0" expanded="false" />
-                <element signature="e#2424#2425#0" expanded="false" />
-                <element signature="e#2460#2461#0" expanded="false" />
-                <element signature="e#2491#2492#0" expanded="false" />
-                <element signature="e#5486#5487#0" expanded="false" />
-                <element signature="e#5538#5539#0" expanded="false" />
-                <element signature="e#5609#5610#0" expanded="false" />
-                <element signature="e#5662#5663#0" expanded="false" />
-                <element signature="e#28680#28681#0" expanded="false" />
-                <element signature="e#28733#28734#0" expanded="false" />
-                <element signature="e#30118#30119#0" expanded="false" />
-                <element signature="e#30166#30167#0" expanded="false" />
-                <element signature="e#30217#30218#0" expanded="false" />
-                <element signature="e#30259#30260#0" expanded="false" />
-                <element signature="e#30304#30305#0" expanded="false" />
-                <element signature="e#30344#30345#0" expanded="false" />
-                <element signature="e#30424#30425#0" expanded="false" />
-                <element signature="e#30476#30477#0" expanded="false" />
-                <element signature="e#30559#30560#0" expanded="false" />
-                <element signature="e#30614#30615#0" expanded="false" />
-                <element signature="e#33809#33810#0" expanded="false" />
-                <element signature="e#33859#33860#0" expanded="false" />
-                <element signature="e#33925#33926#0" expanded="false" />
-                <element signature="e#33981#33982#0" expanded="false" />
-                <element signature="e#34035#34036#0" expanded="false" />
-                <element signature="e#34093#34094#0" expanded="false" />
-                <element signature="e#34165#34166#0" expanded="false" />
-                <element signature="e#34224#34225#0" expanded="false" />
-                <element signature="e#34284#34285#0" expanded="false" />
-                <element signature="e#34348#34349#0" expanded="false" />
-                <element signature="e#36058#36059#0" expanded="false" />
-                <element signature="e#36105#36106#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SchemaUtils.kt" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.exposed/exposed/0.9.0/98ef582dc8eb31b146d0e6801a973533e68d9b59/exposed-0.9.0-sources.jar!/org/jetbrains/exposed/sql/SchemaUtils.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1564">
-              <caret line="96" column="20" lean-forward="false" selection-start-line="96" selection-start-column="20" selection-end-line="96" selection-end-column="20" />
-              <folding>
-                <element signature="e#35#273#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../repoMinerDownloader/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
+            <state relative-caret-position="425">
               <caret line="25" column="26" lean-forward="false" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
               <folding />
             </state>
@@ -361,13 +309,20 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>45</find>
-      <find>excep</find>
       <find>trigger</find>
       <find>50</find>
       <find>100</find>
       <find>println</find>
       <find>fai</find>
       <find>failed</find>
+      <find>yes</find>
+      <find>exception</find>
+      <find>exce</find>
+      <find>excep</find>
+      <find>940</find>
+      <find>respo</find>
+      <find>channel</find>
+      <find>handler</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -738,7 +693,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
@@ -766,50 +720,6 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="repoMinerDownloader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="repoMinerDownloader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="repoMinerDownloader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="repoMinerDownloader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kotlin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -831,6 +741,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -857,7 +768,7 @@
     <configuration default="false" name="MainKt" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="MainKt" />
-      <option name="VM_PARAMETERS" value="" />
+      <option name="VM_PARAMETERS" value=" -Xmx3584m" />
       <option name="PROGRAM_PARAMETERS" value="--db=repo_miner_store --user=root --password=4069043 --folder=I:\\MinedProjects --logger=E:\\repoMinerDownloaderLogger.txt" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -1289,7 +1200,8 @@
       <workItem from="1516813579439" duration="3545000" />
       <workItem from="1516908670718" duration="6734000" />
       <workItem from="1516917850241" duration="484000" />
-      <workItem from="1516955700242" duration="10386000" />
+      <workItem from="1516955700242" duration="21338000" />
+      <workItem from="1516996502935" duration="3593000" />
     </task>
     <task id="LOCAL-00001" summary="Попытка синхронизации по максимальному количеству сообщений в очереди. messageCount даёт некорректное количество (связано с внутренним механизмом коммита сообщений rabbitMQ), при попытке перехода на автоподтверждения пока возникает ошибка &quot;confirms not selected&quot;. Можно подумать о синхронизации через synchronized или вручную (лучше), но такой вариант решения кажется наиболее предпочтительным.">
       <created>1516657656539</created>
@@ -1312,11 +1224,18 @@
       <option name="project" value="LOCAL" />
       <updated>1516918325046</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Добавлено логирование в файл, исправлена ошибка синхронизации с таймаутом брокера, добавлена проверка java ли репозиторий на нашей стороне.">
+      <created>1516974136797</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1516974136797</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55225000" />
+    <option name="totallyTimeSpent" value="69770000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1332,39 +1251,65 @@
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49785408" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.46566522" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32900432" sideWeight="0.34227467" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32900432" sideWeight="0.36587983" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49785408" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32900432" sideWeight="0.65772533" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49785408" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2671674" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23122318" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39935064" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49785408" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.4527897" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49570817" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32900432" sideWeight="0.63412017" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49785408" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26984978" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49356222" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23122318" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39935064" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.49570817" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="processedProjectFiles" value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -1373,7 +1318,8 @@
     <MESSAGE value="Попытка синхронизации по максимальному количеству сообщений в очереди. messageCount даёт некорректное количество (связано с внутренним механизмом коммита сообщений rabbitMQ), при попытке перехода на автоподтверждения пока возникает ошибка &quot;confirms not selected&quot;. Можно подумать о синхронизации через synchronized или вручную (лучше), но такой вариант решения кажется наиболее предпочтительным." />
     <MESSAGE value="Работающая версия выгрузки проектов с гитхаб. &#10;Пока не протестированная на всех выборке.&#10;Требуется добавить конфигурацию через cmd и отладить взаимодействие с развёртыванием БД." />
     <MESSAGE value="Добавлена конфигурация через CMD, почищен вывод, отлажено взаимодействие с развёртыванием таблиц в БД." />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлена конфигурация через CMD, почищен вывод, отлажено взаимодействие с развёртыванием таблиц в БД." />
+    <MESSAGE value="Добавлено логирование в файл, исправлена ошибка синхронизации с таймаутом брокера, добавлена проверка java ли репозиторий на нашей стороне." />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавлено логирование в файл, исправлена ошибка синхронизации с таймаутом брокера, добавлена проверка java ли репозиторий на нашей стороне." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1386,12 +1332,30 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.exposed/exposed/0.9.0/98ef582dc8eb31b146d0e6801a973533e68d9b59/exposed-0.9.0-sources.jar!/org/jetbrains/exposed/sql/SchemaUtils.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1564">
+          <caret line="96" column="20" lean-forward="false" selection-start-line="96" selection-start-column="20" selection-end-line="96" selection-end-column="20" />
+          <folding>
+            <element signature="e#35#273#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../repoMinerDownloader/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="26" lean-forward="false" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../repoMinerDownloader/src/main/kotlin/main.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
@@ -1589,7 +1553,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
@@ -1787,7 +1751,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
@@ -1985,7 +1949,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
@@ -1996,7 +1960,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
@@ -2166,7 +2130,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
@@ -2371,18 +2335,131 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../repoMinerDownloader/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
+        <state relative-caret-position="425">
           <caret line="25" column="26" lean-forward="false" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.9.1/7539531ecf9b6e082fcab195f0835d4f69ead95e/okhttp-3.9.1-sources.jar!/okhttp3/Response.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2159">
+          <caret line="175" column="28" lean-forward="false" selection-start-line="175" selection-start-column="28" selection-end-line="175" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#14681#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#3329#3330#0" expanded="false" />
+            <element signature="e#3353#3354#0" expanded="false" />
+            <element signature="e#3493#3494#0" expanded="false" />
+            <element signature="e#3518#3519#0" expanded="false" />
+            <element signature="e#3580#3581#0" expanded="false" />
+            <element signature="e#3601#3602#0" expanded="false" />
+            <element signature="e#3778#3779#0" expanded="false" />
+            <element signature="e#3820#3821#0" expanded="false" />
+            <element signature="e#3891#3892#0" expanded="false" />
+            <element signature="e#3915#3916#0" expanded="false" />
+            <element signature="e#4093#4094#0" expanded="false" />
+            <element signature="e#4119#4120#0" expanded="false" />
+            <element signature="e#4165#4166#0" expanded="false" />
+            <element signature="e#4202#4203#0" expanded="false" />
+            <element signature="e#4251#4252#0" expanded="false" />
+            <element signature="e#4286#4287#0" expanded="false" />
+            <element signature="e#4490#4491#0" expanded="false" />
+            <element signature="e#4514#4515#0" expanded="false" />
+            <element signature="e#6161#6162#0" expanded="false" />
+            <element signature="e#6195#6196#0" expanded="false" />
+            <element signature="e#6839#6840#0" expanded="false" />
+            <element signature="e#6871#6872#0" expanded="false" />
+            <element signature="e#7192#7193#0" expanded="false" />
+            <element signature="e#7222#7223#0" expanded="false" />
+            <element signature="e#7583#7584#0" expanded="false" />
+            <element signature="e#7613#7614#0" expanded="false" />
+            <element signature="e#8959#8960#0" expanded="false" />
+            <element signature="e#8995#8996#0" expanded="false" />
+            <element signature="e#9309#9310#0" expanded="false" />
+            <element signature="e#9350#9351#0" expanded="false" />
+            <element signature="e#10439#10440#0" expanded="false" />
+            <element signature="e#10484#10485#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.9.1/7539531ecf9b6e082fcab195f0835d4f69ead95e/okhttp-3.9.1-sources.jar!/okhttp3/internal/http/RealResponseBody.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="22" column="45" lean-forward="false" selection-start-line="22" selection-start-column="45" selection-end-line="22" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#1590#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#1487#1488#0" expanded="false" />
+            <element signature="e#1517#1518#0" expanded="false" />
+            <element signature="e#1563#1564#0" expanded="false" />
+            <element signature="e#1586#1587#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.9.1/7539531ecf9b6e082fcab195f0835d4f69ead95e/okhttp-3.9.1-sources.jar!/okhttp3/ResponseBody.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1751">
+          <caret line="130" column="5" lean-forward="false" selection-start-line="130" selection-start-column="5" selection-end-line="130" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#9465#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#4494#4495#0" expanded="false" />
+            <element signature="e#4533#4534#0" expanded="false" />
+            <element signature="e#7022#7023#0" expanded="false" />
+            <element signature="e#7059#7060#0" expanded="false" />
+            <element signature="e#8315#8316#0" expanded="false" />
+            <element signature="e#8351#8352#0" expanded="false" />
+            <element signature="e#8398#8399#0" expanded="false" />
+            <element signature="e#8436#8437#0" expanded="false" />
+            <element signature="e#8486#8487#0" expanded="false" />
+            <element signature="e#8518#8519#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../Java/jdk1.8.0_131/src.zip!/java/io/OutputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1938">
+          <caret line="137" column="16" lean-forward="false" selection-start-line="137" selection-start-column="16" selection-end-line="137" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#5579#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/Connection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="123" column="12" lean-forward="false" selection-start-line="123" selection-start-column="12" selection-end-line="123" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/646bc476bf4e5477edbb2fb92107130512194585/amqp-client-5.1.1.jar!/com/rabbitmq/client/ConnectionFactory.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="92" column="23" lean-forward="true" selection-start-line="92" selection-start-column="23" selection-end-line="92" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/5.1.1/e32a0a72bce2cc27421dfc8b99f96a209855a66e/amqp-client-5.1.1-sources.jar!/com/rabbitmq/client/ConnectionFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-9709">
+          <caret line="700" column="39" lean-forward="false" selection-start-line="700" selection-start-column="32" selection-end-line="700" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../repoMinerDownloader/src/main/kotlin/main.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="119" column="30" lean-forward="false" selection-start-line="119" selection-start-column="30" selection-end-line="119" selection-end-column="30" />
+        <state relative-caret-position="442">
+          <caret line="157" column="15" lean-forward="false" selection-start-line="157" selection-start-column="15" selection-end-line="157" selection-end-column="15" />
           <folding>
-            <element signature="e#0#817#0" expanded="true" />
+            <element signature="e#0#825#0" expanded="true" />
             <element signature="n#!!doc;n#GitProject#0" expanded="false" />
           </folding>
         </state>
