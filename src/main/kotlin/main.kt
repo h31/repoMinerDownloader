@@ -6,13 +6,22 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.ResponseBody
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
+import java.util.logging.SimpleFormatter
+import java.util.logging.FileHandler
+import java.util.logging.Level
+import java.util.logging.Logger
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+
 
 /**
  * Created by Neverland on 18.01.2018.
@@ -60,6 +69,7 @@ var messageCounter=0
 
 class MyArgs(parser: ArgParser) {
 
+    val logger by parser.storing("logger's system path")
     val db by parser.storing("name of the database to store information about projects")
     val user by parser.storing("login for database to store information about projects")
     val password by parser.storing("password for database to store information about projects")
@@ -67,15 +77,33 @@ class MyArgs(parser: ArgParser) {
     val folder by parser.storing("system folder to store projcts' code")
 
 }
+var fileLogger: Logger? = null
+var fileHandler: FileHandler? = null
+
+var realJavaReposCounter=0
 
 fun main(args: Array<String>) {
-
-    println(TAG+"I'm starting now...")
 
     var parsedArgs: MyArgs? = null
 
     mainBody {
         parsedArgs = ArgParser(args).parseInto(::MyArgs)
+    }
+
+    fileLogger = Logger.getLogger(TAG+"Log")
+
+
+    try {
+
+        fileHandler = FileHandler(parsedArgs!!.logger)
+        fileLogger!!.addHandler(fileHandler)
+        val formatter = SimpleFormatter()
+        fileHandler!!.formatter = formatter
+
+    } catch (e: SecurityException) {
+        e.printStackTrace()
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
 
     val jdbc = "jdbc:mysql://127.0.0.1:3306/${parsedArgs!!.db}?serverTimezone=UTC"
@@ -84,13 +112,14 @@ fun main(args: Array<String>) {
     val dbConnection = Database.connect(jdbc,user=parsedArgs!!.user, password = parsedArgs!!.password, driver = driver)
 
     transaction {
-        logger.addLogger(StdOutSqlLogger)
         create(GitProject, GitProjectVersion, ExploredLibrary, ExploredLibraryVersion, GitProjectExploredLibrary)
     }
     transaction {  }
 
     val factory = ConnectionFactory()
     factory.host = "localhost"
+    factory.requestedHeartbeat = 0
+
     val connection = factory.newConnection()
 
     val channel = connection.createChannel()
@@ -107,12 +136,13 @@ fun main(args: Array<String>) {
                                     properties: AMQP.BasicProperties, body: ByteArray) {
             val message = String(body, Charset.forName("UTF-8"))
 
-            println(TAG+"Received project link: $message, messge number: $messageCounter")
+            fileLogger!!.log(Level.INFO,"Received project link: $message, message number: $messageCounter")
 
             if (message == "stop") {
                 channel.close()
                 responseChannel.close()
                 connection.close()
+                fileHandler!!.close()
                 return
             }else{
 
@@ -122,48 +152,76 @@ fun main(args: Array<String>) {
                 val client = OkHttpClient()
                 val request = Request.Builder().url(downloadUrl).build()
 
-                println(TAG+"Start downloading...")
+                fileLogger!!.log(Level.INFO,"Start downloading...")
                 val response = client.newCall(request).execute()
 
                 if (!response.isSuccessful) {
-                    println("Request failed with reason: "+ response)
+
+                    (response.body() as ResponseBody).close()
+
+                    fileLogger!!.log(Level.SEVERE,"Request failed with reason: "+ response)
                 } else {
 
-                    println(TAG+"GitProject has been downloaded.")
+                    fileLogger!!.log(Level.INFO,"GitProject has been downloaded.")
 
-                    val fileOutputStream = FileOutputStream(parsedArgs!!.folder + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
-                    fileOutputStream.write(response.body()!!.bytes())
-                    fileOutputStream.close()
+                    val data=response.body()!!.bytes()
 
-                    println(TAG+"GitProject's files has been stored on disk.")
+                    val zipInputStream= ZipInputStream(ByteArrayInputStream(data))
 
-                    transaction {
-                        logger.addLogger(StdOutSqlLogger)
+                    var entry: ZipEntry?=zipInputStream.getNextEntry()
 
-                        val project= GitProject.insert {
-                            it[name] = projectName
-                            it[url] = downloadUrl.substringBeforeLast("/")
-                            it[lastDownloadDate] = System.currentTimeMillis()
+                    var isJavaRepository=false
+
+                    while (entry != null){
+
+                        if ((!entry.isDirectory)&&(entry.name.endsWith(".java"))){
+                            isJavaRepository=true
+                            break
                         }
-
-                        val projectVersion= GitProjectVersion.insert {
-                            it[gitProjectId] = project[id]
-                            it[versionHash] = downloadUrl.substringAfterLast("-")
-                        }
-
-                        GitProject.update({ GitProject.id eq project[GitProject.id]}){
-                            it[downloadedProjectVersionId]=projectVersion[id]
-                        }
-
+                        entry=zipInputStream.getNextEntry()
                     }
-                    println(TAG+"GitProject's information has been stored in database.")
+
+                    fileLogger!!.log(Level.INFO,"Java project: ${if (isJavaRepository) "yes, number: $realJavaReposCounter" else "no"}.")
+
+                    if (isJavaRepository) {
+
+                        realJavaReposCounter++
+
+                        val fileOutputStream = FileOutputStream(parsedArgs!!.folder + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
+                        fileOutputStream.write(data)
+                        fileOutputStream.close()
+
+                        (response.body() as ResponseBody).close()
+
+                        fileLogger!!.log(Level.INFO, "GitProject's files has been stored on disk.")
+
+                        transaction {
+
+                            val project = GitProject.insert {
+                                it[name] = projectName
+                                it[url] = downloadUrl.substringBeforeLast("/")
+                                it[lastDownloadDate] = System.currentTimeMillis()
+                            }
+
+                            val projectVersion = GitProjectVersion.insert {
+                                it[gitProjectId] = project[id]
+                                it[versionHash] = downloadUrl.substringAfterLast("-")
+                            }
+
+                            GitProject.update({ GitProject.id eq project[GitProject.id] }) {
+                                it[downloadedProjectVersionId] = projectVersion[id]
+                            }
+
+                        }
+                        fileLogger!!.log(Level.INFO, "GitProject's information has been stored in database.")
+                    }
                 }
             }
 
             messageCounter++
 
             if(messageCounter%100==0) {
-                println(TAG+"Acknowledgment has been sent (to approve consumption of 100 messages).")
+                fileLogger!!.log(Level.INFO,"Acknowledgment has been sent (to approve consumption of 100 messages).")
                 responseChannel.basicPublish("", ACK_QUEUE_NAME, null, "consumed".toByteArray())
             }
         }
