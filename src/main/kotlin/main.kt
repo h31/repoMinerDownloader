@@ -4,25 +4,25 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import okhttp3.ResponseBody
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.io.ByteArrayInputStream
-import java.io.FileOutputStream
-import java.io.IOException
+import org.jetbrains.exposed.sql.update
+import java.io.*
+import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 import java.util.*
-import java.util.logging.SimpleFormatter
+import java.util.concurrent.*
 import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
+import java.util.logging.SimpleFormatter
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
-import com.sun.deploy.trace.Trace.flush
-import java.io.ByteArrayOutputStream
-
-
 
 
 /**
@@ -34,13 +34,13 @@ object GitProject : Table() {
     var lastDownloadDate = long("last_download_date").nullable()
     var url = varchar("url", 250)
     var name = varchar("name", 250)
-    var downloadedProjectVersionId=(integer("downloaded_project_version_id") ).nullable()
+    var downloadedProjectVersionId = (integer("downloaded_project_version_id")).nullable()
 }
 
 object GitProjectVersion : Table() {
     var id = integer("id").primaryKey().autoIncrement()
     var gitProjectId = integer("project_id") references GitProject.id
-    var versionHash=varchar("version_hash", 250)
+    var versionHash = varchar("version_hash", 250)
 }
 
 object GitProjectExploredLibrary : Table() {
@@ -62,14 +62,14 @@ object ExploredLibrary : Table() {
     var groupName = varchar("group_name", 250)
 }
 
-val TAG="repoMinerDownloader: "
+val TAG = "repoMinerDownloader: "
 
 val TASKS_QUEUE_NAME = "repositoryDownloadTasksQueue";
 val ACK_QUEUE_NAME = "ackQueue";
-var channel: Channel?=null
-var responseChannel:Channel?=null
+var channel: Channel? = null
+var responseChannel: Channel? = null
 
-var messageCounter=0
+var messageCounter = 0
 
 class MyArgs(parser: ArgParser) {
 
@@ -81,10 +81,11 @@ class MyArgs(parser: ArgParser) {
     val folder by parser.storing("system folder to store projects' code")
 
 }
+
 var fileLogger: Logger? = null
 var fileHandler: FileHandler? = null
 
-var realJavaReposCounter=0
+var realJavaReposCounter = 0
 
 fun main(args: Array<String>) {
 
@@ -94,7 +95,7 @@ fun main(args: Array<String>) {
         parsedArgs = ArgParser(args).parseInto(::MyArgs)
     }
 
-    fileLogger = Logger.getLogger(TAG+"Log")
+    fileLogger = Logger.getLogger(TAG + "Log")
 
     try {
 
@@ -112,34 +113,57 @@ fun main(args: Array<String>) {
     val jdbc = "jdbc:mysql://127.0.0.1:3306/${parsedArgs!!.db}?serverTimezone=UTC"
     val driver = "com.mysql.cj.jdbc.Driver"
 
-    val dbConnection = Database.connect(jdbc,user=parsedArgs!!.user, password = parsedArgs!!.password, driver = driver)
+    val dbConnection = Database.connect(jdbc, user = parsedArgs!!.user, password = parsedArgs!!.password, driver = driver)
 
     transaction {
         create(GitProject, GitProjectVersion, ExploredLibrary, ExploredLibraryVersion, GitProjectExploredLibrary)
     }
-    transaction {  }
+    transaction { } // ?
 
-    val factory = ConnectionFactory()
+    var factory = ConnectionFactory()
+
     factory.host = "localhost"
-    factory.requestedHeartbeat = 0
-    factory.exceptionHandler=object : ForgivingExceptionHandler() {
 
+    //TODO: refactor somehow
+    factory.exceptionHandler = object : ForgivingExceptionHandler() {
+/*
         override fun log(message: String?, e: Throwable?) {
-            fileLogger!!.log(Level.SEVERE,"Consumption failed with reason: "+ message)
+            fileLogger!!.log(Level.SEVERE, "Consumption failed with reason: $message")
+            fileLogger!!.log(Level.INFO, "${e?.localizedMessage}")
+            fileLogger!!.log(Level.INFO, e?.javaClass?.canonicalName)
         }
 
-        override fun handleConsumerException(channel: Channel?, exception: Throwable?, consumer: Consumer?, consumerTag: String?, methodName: String?) {
+        override fun handleConsumerException(channel: Channel?, exception: Throwable?,
+                                             consumer: Consumer?, consumerTag: String?, methodName: String?) {
             super.handleConsumerException(channel, exception, consumer, consumerTag, methodName)
 
-            if(exception!!.javaClass.canonicalName == "java.lang.OutOfMemoryError")
+            if (exception!!.javaClass.canonicalName == "java.lang.OutOfMemoryError")
                 countMessages() //Можно было бы занести реализацию внутрь в случае реализации в виде полноценного
             // класса-наследника
-        }
+        }*/
     }
+
+
+    //factory.setRequestedHeartbeat(5);
+    //factory.connectionTimeout=5;
+    // TODO
+    //factory.shutdownTimeout = 10;
 
     val connection = factory.newConnection()
 
     channel = connection.createChannel()
+
+    //connection.setHeartbeat(5);
+
+    //TODO
+   /* println(connection.heartbeat)
+
+    println(factory.connectionTimeout)
+
+    channel!!.addShutdownListener { cause: ShutdownSignalException? ->
+        println(cause!!.message)
+    }*/
+
     responseChannel = connection.createChannel()
 
     val args = HashMap<String, Any>()
@@ -153,7 +177,7 @@ fun main(args: Array<String>) {
                                     properties: AMQP.BasicProperties, body: ByteArray) {
             val message = String(body, Charset.forName("UTF-8"))
 
-            fileLogger!!.log(Level.INFO,"Received project link: $message, message number: $messageCounter")
+            fileLogger!!.log(Level.INFO, "Received project link: $message, message number: $messageCounter")
 
             if (runRequest(message)) return
 
@@ -172,18 +196,27 @@ fun main(args: Array<String>) {
                 val downloadUrl = message;
                 val projectName = downloadUrl.substringBeforeLast("/").substringAfterLast("/")
 
-                val client = OkHttpClient()
+                val client = OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(60 * 60 * 2, TimeUnit.SECONDS).build()
+
                 val request = Request.Builder().url(downloadUrl).build()
 
                 fileLogger!!.log(Level.INFO, "Start downloading...")
-                val response = client.newCall(request).execute()
+
+                lateinit var response: Response;
+
+                response = client.newCall(request).execute()
 
                 if (!response.isSuccessful) {
 
                     (response.body() as ResponseBody).close()
 
                     fileLogger!!.log(Level.SEVERE, "Request failed with reason: " + response)
+
+                    return false
                 } else {
+
+                   // var stringAnswer=(response.body()!! as ResponseBody).string()
 
                     val bytesInputStream = (response.body()!! as ResponseBody).byteStream()
 
@@ -192,12 +225,27 @@ fun main(args: Array<String>) {
                     val byteBatchBuffer = ByteArray(16384)
                     var nRead: Int = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
 
-
-
                     while (nRead != -1) {
 
-                        bytesOutputStream.write(byteBatchBuffer, 0, nRead)
-                        nRead = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
+                        try {
+                            bytesOutputStream.write(byteBatchBuffer, 0, nRead)                              // А здесь не надо оффсетить каждый раз на уже сдвинутое количество байт?
+                            nRead = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
+                        } catch (e: IOException) {
+
+                            bytesInputStream.close()
+                            bytesOutputStream.close()
+                            (response.body() as ResponseBody).close()
+
+                            if (e is SocketTimeoutException) {
+                                fileLogger!!.log(Level.SEVERE,
+                                        "This repository is too big to be obtained " +
+                                                "during 2h and will be excluded because of it")
+                            }else{
+                                fileLogger!!.log(Level.SEVERE, "Connection was aborted due to cause: ${e?.message}")
+                            }
+
+                            return false
+                        }
                     }
 
                     val data = bytesOutputStream.toByteArray()
@@ -224,42 +272,75 @@ fun main(args: Array<String>) {
                         entry = zipInputStream.getNextEntry()
                     }
 
-                    fileLogger!!.log(Level.INFO, "Java project: ${if (isJavaRepository) "yes, number: $realJavaReposCounter" else "no"}.")
+                    zipInputStream.close()
+
+                    var stored = false
 
                     if (isJavaRepository) {
 
-                        realJavaReposCounter++
+                        if (!checkAndCreateRepoFSStuffIfAbsent(true, parsedArgs!!.folder) ||
+                                !checkAndCreateRepoFSStuffIfAbsent(false, parsedArgs!!.folder + "/" + projectName + ".zip")) {
+                            fileLogger!!.log(Level.INFO, "GitProject's can't be stored on disk.")
+                        } else {
+                            realJavaReposCounter++
 
-                        val fileOutputStream = FileOutputStream(parsedArgs!!.folder + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
-                        fileOutputStream.write(data)
-                        fileOutputStream.close()
+                            val fileOutputStream = FileOutputStream(parsedArgs!!.folder + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
+                            fileOutputStream.write(data)
+                            fileOutputStream.close()
 
+                            fileLogger!!.log(Level.INFO, "GitProject's files has been stored on disk.")
+                            stored = true
 
-                        fileLogger!!.log(Level.INFO, "GitProject's files has been stored on disk.")
+                            transaction {
 
-                        transaction {
+                                val project = GitProject.insert {
+                                    it[name] = projectName
+                                    it[url] = downloadUrl.substringBeforeLast("/")
+                                    it[lastDownloadDate] = System.currentTimeMillis()
+                                }
 
-                            val project = GitProject.insert {
-                                it[name] = projectName
-                                it[url] = downloadUrl.substringBeforeLast("/")
-                                it[lastDownloadDate] = System.currentTimeMillis()
+                                val projectVersion = GitProjectVersion.insert {
+                                    it[gitProjectId] = project[id]
+                                    it[versionHash] = downloadUrl.substringAfterLast("-")
+                                }
+
+                                GitProject.update({ GitProject.id eq project[GitProject.id] }) {
+                                    it[downloadedProjectVersionId] = projectVersion[id]
+                                }
+
                             }
-
-                            val projectVersion = GitProjectVersion.insert {
-                                it[gitProjectId] = project[id]
-                                it[versionHash] = downloadUrl.substringAfterLast("-")
-                            }
-
-                            GitProject.update({ GitProject.id eq project[GitProject.id] }) {
-                                it[downloadedProjectVersionId] = projectVersion[id]
-                            }
-
+                            fileLogger!!.log(Level.INFO, "GitProject's information has been stored in database.")
                         }
-                        fileLogger!!.log(Level.INFO, "GitProject's information has been stored in database.")
                     }
+                    fileLogger!!.log(Level.INFO, "Java project: ${if (isJavaRepository && stored) "yes, number: $realJavaReposCounter" else
+                        if (isJavaRepository) "yes, can't be stored" else "no"}.")
+
                 }
             }
             return false
+        }
+
+        private fun checkAndCreateRepoFSStuffIfAbsent(isDir: Boolean, path: String): Boolean {
+            val file = File(path)
+            if (!file.exists()) {
+                when (isDir) {
+                    true -> if (file.mkdir()) {
+                        println("Directory ${parsedArgs!!.folder} is created!")
+                        return true
+                    } else {
+                        println("Failed to create directory!")
+                        return false
+                    }
+                    else -> if (file.createNewFile()) {
+                        println("File ${file.toPath()} is created!")
+                        return true
+                    } else {
+                        println("Failed to create file!")
+                        return false
+                    }
+                }
+            } else
+                return true
         }
     }
     channel!!.basicConsume(TASKS_QUEUE_NAME, true, consumer)

@@ -25,7 +25,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output-test url="file://$MODULE_DIR$/../../build/classes/test" />
+    <output-test url="file://$MODULE_DIR$/../../out/test/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
@@ -41,14 +41,15 @@
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.9.1" level="project" />
     <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:6.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.exposed:exposed:0.9.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51" level="project" />
     <orderEntry type="library" name="Gradle: com.xenomachina:kotlin-argparser:2.0.4" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.13.0" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.1.60" level="project" />
     <orderEntry type="library" name="Gradle: joda-time:joda-time:2.9.9" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.51" level="project" />
     <orderEntry type="library" name="Gradle: com.xenomachina:xenocom:0.0.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.20" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.51" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.2.51" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="repoMinerDownloader_main" />
