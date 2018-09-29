@@ -1,6 +1,9 @@
+import com.ibm.icu.text.CharsetDetector
+import com.ibm.icu.text.CharsetMatch
 import com.rabbitmq.client.*
 import com.rabbitmq.client.impl.ForgivingExceptionHandler
 import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.InvalidArgumentException
 import com.xenomachina.argparser.mainBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -33,6 +36,7 @@ object GitProject : Table() {
     var id = integer("id").primaryKey().autoIncrement()
     var lastDownloadDate = long("last_download_date").nullable()
     var url = varchar("url", 250)
+    var charset = varchar("charset", 250)
     var name = varchar("name", 250)
     var downloadedProjectVersionId = (integer("downloaded_project_version_id")).nullable()
 }
@@ -125,22 +129,23 @@ fun main(args: Array<String>) {
     factory.host = "localhost"
 
     //TODO: refactor somehow
+
+    val ERROR_TAG = "ERROR: "
+
     factory.exceptionHandler = object : ForgivingExceptionHandler() {
-/*
+
         override fun log(message: String?, e: Throwable?) {
-            fileLogger!!.log(Level.SEVERE, "Consumption failed with reason: $message")
-            fileLogger!!.log(Level.INFO, "${e?.localizedMessage}")
-            fileLogger!!.log(Level.INFO, e?.javaClass?.canonicalName)
+            fileLogger!!.log(Level.SEVERE, ERROR_TAG + "Consumption failed with reason: $message")
+            fileLogger!!.log(Level.INFO, ERROR_TAG + "${e?.localizedMessage}")
+            fileLogger!!.log(Level.INFO, ERROR_TAG + e?.javaClass?.canonicalName)
         }
 
         override fun handleConsumerException(channel: Channel?, exception: Throwable?,
                                              consumer: Consumer?, consumerTag: String?, methodName: String?) {
             super.handleConsumerException(channel, exception, consumer, consumerTag, methodName)
+            countMessages() // TODO: посмотреть, попадаем ли мы сюда с covered-исключениями
 
-            if (exception!!.javaClass.canonicalName == "java.lang.OutOfMemoryError")
-                countMessages() //Можно было бы занести реализацию внутрь в случае реализации в виде полноценного
-            // класса-наследника
-        }*/
+        }
     }
 
 
@@ -156,13 +161,13 @@ fun main(args: Array<String>) {
     //connection.setHeartbeat(5);
 
     //TODO
-   /* println(connection.heartbeat)
+    /* println(connection.heartbeat)
 
-    println(factory.connectionTimeout)
+     println(factory.connectionTimeout)
 
-    channel!!.addShutdownListener { cause: ShutdownSignalException? ->
-        println(cause!!.message)
-    }*/
+     channel!!.addShutdownListener { cause: ShutdownSignalException? ->
+         println(cause!!.message)
+     }*/
 
     responseChannel = connection.createChannel()
 
@@ -193,7 +198,7 @@ fun main(args: Array<String>) {
                 return true
             } else {
 
-                val downloadUrl = message;
+                val downloadUrl = "https://api.github.com/repos/misiek/foo/zipball"//message;
                 val projectName = downloadUrl.substringBeforeLast("/").substringAfterLast("/")
 
                 val client = OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
@@ -215,8 +220,6 @@ fun main(args: Array<String>) {
 
                     return false
                 } else {
-
-                   // var stringAnswer=(response.body()!! as ResponseBody).string()
 
                     val bytesInputStream = (response.body()!! as ResponseBody).byteStream()
 
@@ -240,11 +243,11 @@ fun main(args: Array<String>) {
                                 fileLogger!!.log(Level.SEVERE,
                                         "This repository is too big to be obtained " +
                                                 "during 2h and will be excluded because of it")
-                            }else{
+                                return false
+                            } else {
                                 fileLogger!!.log(Level.SEVERE, "Connection was aborted due to cause: ${e?.message}")
+                                throw e
                             }
-
-                            return false
                         }
                     }
 
@@ -257,26 +260,46 @@ fun main(args: Array<String>) {
 
                     fileLogger!!.log(Level.INFO, "GitProject has been downloaded.")
 
-                    val zipInputStream = ZipInputStream(ByteArrayInputStream(data))
-
-                    var entry: ZipEntry? = zipInputStream.getNextEntry()
+                    val byteArrayInputStream = ByteArrayInputStream(data)
+                    var possibleZipCharsets = detectPossibleZipCharsets(byteArrayInputStream)
 
                     var isJavaRepository = false
+                    var realCharset: String? = null
 
-                    while (entry != null) {
+                    for ((i, possibleZipCharset) in possibleZipCharsets.withIndex()) {
 
-                        if ((!entry.isDirectory) && (entry.name.endsWith(".java"))) {
-                            isJavaRepository = true
-                            break
+                        lateinit var zipInputStream: ZipInputStream
+                        try {
+                            zipInputStream = ZipInputStream(byteArrayInputStream, Charset.forName(possibleZipCharset))
+
+                            var entry: ZipEntry? = zipInputStream.getNextEntry()
+
+                            while (entry != null) {
+
+                                if ((!entry.isDirectory) && (entry.name.endsWith(".java"))) {
+                                    isJavaRepository = true
+                                }
+                                entry = zipInputStream.getNextEntry()
+                            }
+
+                            if (isJavaRepository) {                                 // Если Java-репозиторий и не вывалились с исключением
+                                realCharset = possibleZipCharset
+                                break;
+                            }
+
+                        } catch (e: Exception) {
+                            if (!(e is InvalidArgumentException && e.message.equals("MALFORMED")))
+                                throw e
+                        } finally {
+                            zipInputStream.close()
                         }
-                        entry = zipInputStream.getNextEntry()
                     }
 
-                    zipInputStream.close()
+                    byteArrayInputStream.close()
 
                     var stored = false
 
-                    if (isJavaRepository) {
+                    if ((isJavaRepository) && (realCharset != null)) {
 
                         if (!checkAndCreateRepoFSStuffIfAbsent(true, parsedArgs!!.folder) ||
                                 !checkAndCreateRepoFSStuffIfAbsent(false, parsedArgs!!.folder + "/" + projectName + ".zip")) {
@@ -296,6 +319,7 @@ fun main(args: Array<String>) {
                                 val project = GitProject.insert {
                                     it[name] = projectName
                                     it[url] = downloadUrl.substringBeforeLast("/")
+                                    it[charset] = realCharset
                                     it[lastDownloadDate] = System.currentTimeMillis()
                                 }
 
@@ -312,13 +336,28 @@ fun main(args: Array<String>) {
                             fileLogger!!.log(Level.INFO, "GitProject's information has been stored in database.")
                         }
                     }
-                    fileLogger!!.log(Level.INFO, "Java project: ${if (isJavaRepository && stored) "yes, number: $realJavaReposCounter" else
-                        if (isJavaRepository) "yes, can't be stored" else "no"}.")
+
+                    when {
+                        isJavaRepository && stored && (realCharset != null) ->
+                            fileLogger!!.log(Level.INFO, "Java project correctly recognized: yes," +
+                                    " number: $realJavaReposCounter")
+                        isJavaRepository && (realCharset != null) ->
+                            fileLogger!!.log(Level.INFO, "Java project correctly recognized , " +
+                                    "but couldn't be stored.")
+                        isJavaRepository ->
+                            fileLogger!!.log(Level.INFO, "Java project wasn't correctly recognized (encoding). ")
+                        else ->
+                            fileLogger!!.log(Level.INFO, "Non-java project.")
+                    }
 
                 }
             }
             return false
         }
+
+        private fun detectPossibleZipCharsets(zipInputStream: ByteArrayInputStream) =
+                CharsetDetector().setText(zipInputStream).detectAll().map { it.name }.toList()
+
 
         private fun checkAndCreateRepoFSStuffIfAbsent(isDir: Boolean, path: String): Boolean {
             val file = File(path)
