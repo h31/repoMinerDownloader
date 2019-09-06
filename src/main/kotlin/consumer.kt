@@ -34,159 +34,159 @@ class GithubConsumer(private val connection: Connection, private val parsedArgs:
     }
 
     private fun runRequest(message: String): Boolean {
-            val downloadUrl = message;
-            val projectName = downloadUrl.substringBeforeLast("/").substringAfterLast("/")
+        val downloadUrl = message;
+        val projectName = downloadUrl.substringBeforeLast("/").substringAfterLast("/")
 
-            val client = OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(60 * 60 * 2, TimeUnit.SECONDS).build()
+        val client = OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(60 * 60 * 2, TimeUnit.SECONDS).build()
 
-            val request = Request.Builder().url(downloadUrl).build()
+        val request = Request.Builder().url(downloadUrl).build()
 
-            fileLogger!!.log(Level.INFO, "Start downloading...")
+        fileLogger!!.log(Level.INFO, "Start downloading...")
 
-            lateinit var response: Response;
+        lateinit var response: Response;
 
-            response = client.newCall(request).execute()
+        response = client.newCall(request).execute()
 
-            if (!response.isSuccessful) {
+        if (!response.isSuccessful) {
 
-                (response.body() as ResponseBody).close()
+            (response.body() as ResponseBody).close()
 
-                fileLogger!!.log(Level.SEVERE, "Request failed with reason: " + response)
+            fileLogger!!.log(Level.SEVERE, "Request failed with reason: " + response)
 
-                return false
-            } else {
+            return false
+        } else {
 
-                val bytesInputStream = (response.body()!! as ResponseBody).byteStream()
+            val bytesInputStream = (response.body()!! as ResponseBody).byteStream()
 
-                val bytesOutputStream = ByteArrayOutputStream()
+            val bytesOutputStream = ByteArrayOutputStream()
 
-                val byteBatchBuffer = ByteArray(16384)
-                var nRead: Int = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
+            val byteBatchBuffer = ByteArray(16384)
+            var nRead: Int = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
 
-                while (nRead != -1) {
+            while (nRead != -1) {
 
-                    try {
-                        bytesOutputStream.write(byteBatchBuffer, 0, nRead)                              // А здесь не надо оффсетить каждый раз на уже сдвинутое количество байт?
-                        nRead = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
-                    } catch (e: IOException) {
+                try {
+                    bytesOutputStream.write(byteBatchBuffer, 0, nRead)                              // А здесь не надо оффсетить каждый раз на уже сдвинутое количество байт?
+                    nRead = bytesInputStream.read(byteBatchBuffer, 0, byteBatchBuffer.size)
+                } catch (e: IOException) {
 
-                        bytesInputStream.close()
-                        bytesOutputStream.close()
-                        (response.body() as ResponseBody).close()
+                    bytesInputStream.close()
+                    bytesOutputStream.close()
+                    (response.body() as ResponseBody).close()
 
-                        if (e is SocketTimeoutException) {
-                            fileLogger!!.log(Level.SEVERE,
-                                    "This repository is too big to be obtained " +
-                                            "during 2h and will be excluded because of it")
-                            return false
-                        } else {
-                            fileLogger!!.log(Level.SEVERE, "Connection was aborted due to cause: ${e?.message}")
-                            throw e
-                        }
-                    }
-                }
-
-                val data = bytesOutputStream.toByteArray()
-
-                bytesInputStream.close()
-                bytesOutputStream.close()
-
-                (response.body() as ResponseBody).close()
-
-                fileLogger!!.log(Level.INFO, "GitProject has been downloaded.")
-
-                val byteArrayInputStream = ByteArrayInputStream(data)
-                var possibleZipCharsets = detectPossibleZipCharsets(byteArrayInputStream)
-
-                var isJavaRepository = false
-                var realCharset: String? = null
-
-                for ((i, possibleZipCharset) in possibleZipCharsets.withIndex()) {
-
-                    lateinit var zipInputStream: ZipInputStream
-                    try {
-                        zipInputStream = ZipInputStream(byteArrayInputStream, Charset.forName(possibleZipCharset))
-
-                        var entry: ZipEntry? = zipInputStream.getNextEntry()
-
-                        while (entry != null) {
-
-                            if ((!entry.isDirectory) && (entry.name.endsWith(".java"))) {
-                                isJavaRepository = true
-                            }
-                            entry = zipInputStream.getNextEntry()
-                        }
-
-                        if (isJavaRepository) {                                 // Если Java-репозиторий и не вывалились с исключением
-                            realCharset = possibleZipCharset
-                            break;
-                        }
-
-                    } catch (e: Exception) {
-                        if (!(e is InvalidArgumentException && e.message.equals("MALFORMED")))
-                            throw e
-                    } finally {
-                        zipInputStream.close()
-                    }
-                }
-
-                byteArrayInputStream.close()
-
-                var stored = false
-
-                if ((isJavaRepository) && (realCharset != null)) {
-
-                    if (!checkAndCreateRepoFSStuffIfAbsent(true, parsedArgs!!.folder) ||
-                            !checkAndCreateRepoFSStuffIfAbsent(false, parsedArgs!!.folder + "/" + projectName + ".zip")) {
-                        fileLogger!!.log(Level.INFO, "GitProject's can't be stored on disk.")
+                    if (e is SocketTimeoutException) {
+                        fileLogger!!.log(Level.SEVERE,
+                                "This repository is too big to be obtained " +
+                                        "during 2h and will be excluded because of it")
+                        return false
                     } else {
-                        realJavaReposCounter++
-
-                        val fileOutputStream = FileOutputStream(parsedArgs!!.folder + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
-                        fileOutputStream.write(data)
-                        fileOutputStream.close()
-
-                        fileLogger!!.log(Level.INFO, "GitProject's files has been stored on disk.")
-                        stored = true
-
-                        transaction {
-
-                            val project = GitProject.insert {
-                                it[GitProject.name] = projectName
-                                it[GitProject.url] = downloadUrl.substringBeforeLast("/")
-                                it[GitProject.charset] = realCharset
-                                it[GitProject.lastDownloadDate] = System.currentTimeMillis()
-                            }
-
-                            val projectVersion = GitProjectVersion.insert {
-                                it[GitProjectVersion.gitProjectId] = project[GitProjectVersion.id]
-                                it[GitProjectVersion.versionHash] = downloadUrl.substringAfterLast("-")
-                            }
-
-                            GitProject.update({ GitProject.id eq project[GitProject.id] }) {
-                                it[GitProject.downloadedProjectVersionId] = projectVersion[GitProject.id]
-                            }
-
-                        }
-                        fileLogger!!.log(Level.INFO, "GitProject's information has been stored in database.")
+                        fileLogger!!.log(Level.SEVERE, "Connection was aborted due to cause: ${e?.message}")
+                        throw e
                     }
                 }
-
-                when {
-                    isJavaRepository && stored && (realCharset != null) ->
-                        fileLogger!!.log(Level.INFO, "Java project correctly recognized: yes," +
-                                " number: $realJavaReposCounter")
-                    isJavaRepository && (realCharset != null) ->
-                        fileLogger!!.log(Level.INFO, "Java project correctly recognized , " +
-                                "but couldn't be stored.")
-                    isJavaRepository ->
-                        fileLogger!!.log(Level.INFO, "Java project wasn't correctly recognized (encoding). ")
-                    else ->
-                        fileLogger!!.log(Level.INFO, "Non-java project.")
-                }
-
             }
+
+            val data = bytesOutputStream.toByteArray()
+
+            bytesInputStream.close()
+            bytesOutputStream.close()
+
+            (response.body() as ResponseBody).close()
+
+            fileLogger!!.log(Level.INFO, "GitProject has been downloaded.")
+
+            val byteArrayInputStream = ByteArrayInputStream(data)
+            var possibleZipCharsets = detectPossibleZipCharsets(byteArrayInputStream)
+
+            var isJavaRepository = false
+            var realCharset: String? = null
+
+            for ((i, possibleZipCharset) in possibleZipCharsets.withIndex()) {
+
+                lateinit var zipInputStream: ZipInputStream
+                try {
+                    zipInputStream = ZipInputStream(byteArrayInputStream, Charset.forName(possibleZipCharset))
+
+                    var entry: ZipEntry? = zipInputStream.getNextEntry()
+
+                    while (entry != null) {
+
+                        if ((!entry.isDirectory) && (entry.name.endsWith(".java"))) {
+                            isJavaRepository = true
+                        }
+                        entry = zipInputStream.getNextEntry()
+                    }
+
+                    if (isJavaRepository) {                                 // Если Java-репозиторий и не вывалились с исключением
+                        realCharset = possibleZipCharset
+                        break;
+                    }
+
+                } catch (e: Exception) {
+                    if (!(e is InvalidArgumentException && e.message.equals("MALFORMED")))
+                        throw e
+                } finally {
+                    zipInputStream.close()
+                }
+            }
+
+            byteArrayInputStream.close()
+
+            var stored = false
+
+            if ((isJavaRepository) && (realCharset != null)) {
+
+                if (!checkAndCreateRepoFSStuffIfAbsent(true, parsedArgs!!.folder) ||
+                        !checkAndCreateRepoFSStuffIfAbsent(false, parsedArgs!!.folder + "/" + projectName + ".zip")) {
+                    fileLogger!!.log(Level.INFO, "GitProject's can't be stored on disk.")
+                } else {
+                    realJavaReposCounter++
+
+                    val fileOutputStream = FileOutputStream(parsedArgs!!.folder + "/" + projectName + ".zip")     //TODO: configure - whether save to File System or database
+                    fileOutputStream.write(data)
+                    fileOutputStream.close()
+
+                    fileLogger!!.log(Level.INFO, "GitProject's files has been stored on disk.")
+                    stored = true
+
+                    transaction {
+
+                        val project = GitProject.insert {
+                            it[GitProject.name] = projectName
+                            it[GitProject.url] = downloadUrl.substringBeforeLast("/")
+                            it[GitProject.charset] = realCharset
+                            it[GitProject.lastDownloadDate] = System.currentTimeMillis()
+                        }
+
+                        val projectVersion = GitProjectVersion.insert {
+                            it[GitProjectVersion.gitProjectId] = project[GitProjectVersion.id]
+                            it[GitProjectVersion.versionHash] = downloadUrl.substringAfterLast("-")
+                        }
+
+                        GitProject.update({ GitProject.id eq project[GitProject.id] }) {
+                            it[GitProject.downloadedProjectVersionId] = projectVersion[GitProject.id]
+                        }
+
+                    }
+                    fileLogger!!.log(Level.INFO, "GitProject's information has been stored in database.")
+                }
+            }
+
+            when {
+                isJavaRepository && stored && (realCharset != null) ->
+                    fileLogger!!.log(Level.INFO, "Java project correctly recognized: yes," +
+                            " number: $realJavaReposCounter")
+                isJavaRepository && (realCharset != null) ->
+                    fileLogger!!.log(Level.INFO, "Java project correctly recognized , " +
+                            "but couldn't be stored.")
+                isJavaRepository ->
+                    fileLogger!!.log(Level.INFO, "Java project wasn't correctly recognized (encoding). ")
+                else ->
+                    fileLogger!!.log(Level.INFO, "Non-java project.")
+            }
+
+        }
     }
 
     private fun detectPossibleZipCharsets(zipInputStream: ByteArrayInputStream) =
