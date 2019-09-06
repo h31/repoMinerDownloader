@@ -57,7 +57,6 @@ val TAG = "repoMinerDownloader: "
 val TASKS_QUEUE_NAME = "repositoryDownloadTasksQueue";
 val ACK_QUEUE_NAME = "ackQueue";
 var channel: Channel? = null
-var responseChannel: Channel? = null
 
 var messageCounter = 0
 
@@ -131,7 +130,6 @@ fun main(args: Array<String>) {
         override fun handleConsumerException(channel: Channel?, exception: Throwable?,
                                              consumer: Consumer?, consumerTag: String?, methodName: String?) {
             super.handleConsumerException(channel, exception, consumer, consumerTag, methodName)
-            countMessages() // TODO: посмотреть, попадаем ли мы сюда с covered-исключениями
 
         }
     }
@@ -157,8 +155,6 @@ fun main(args: Array<String>) {
          println(cause!!.message)
      }*/
 
-    responseChannel = connection.createChannel()
-
     val args = HashMap<String, Any>()
     args.put("x-max-length", 200)
     channel!!.queueDeclare(TASKS_QUEUE_NAME, false, false, false, args)
@@ -166,14 +162,4 @@ fun main(args: Array<String>) {
 
     val consumer = GithubConsumer(connection, parsedArgs)
     channel!!.basicConsume(TASKS_QUEUE_NAME, false, consumer)
-}
-
-//TODO: structure (default message handling -> connection factory?)
-private fun countMessages() {
-    messageCounter++
-
-    if (messageCounter % 100 == 0) {
-        fileLogger!!.log(Level.INFO, "Acknowledgment has been sent (to approve consumption of 100 messages).")
-        responseChannel!!.basicPublish("", ACK_QUEUE_NAME, null, "consumed".toByteArray())
-    }
 }

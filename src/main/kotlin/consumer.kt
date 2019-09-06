@@ -1,8 +1,5 @@
 import com.ibm.icu.text.CharsetDetector
-import com.rabbitmq.client.AMQP
-import com.rabbitmq.client.Connection
-import com.rabbitmq.client.DefaultConsumer
-import com.rabbitmq.client.Envelope
+import com.rabbitmq.client.*
 import com.xenomachina.argparser.InvalidArgumentException
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -28,19 +25,15 @@ class GithubConsumer(private val connection: Connection, private val parsedArgs:
         fileLogger!!.log(Level.INFO, "Received project link: $message, message number: $messageCounter")
 
         if (runRequest(message)) return
+    }
 
-        countMessages()
+    override fun handleShutdownSignal(consumerTag: String?, sig: ShutdownSignalException?) {
+        channel!!.close()
+        connection.close()
+        fileHandler!!.close()
     }
 
     private fun runRequest(message: String): Boolean {
-        if (message == "stop") {
-            channel!!.close()
-            responseChannel!!.close()
-            connection.close()
-            fileHandler!!.close()
-            return true
-        } else {
-
             val downloadUrl = message;
             val projectName = downloadUrl.substringBeforeLast("/").substringAfterLast("/")
 
@@ -194,8 +187,6 @@ class GithubConsumer(private val connection: Connection, private val parsedArgs:
                 }
 
             }
-        }
-        return false
     }
 
     private fun detectPossibleZipCharsets(zipInputStream: ByteArrayInputStream) =
