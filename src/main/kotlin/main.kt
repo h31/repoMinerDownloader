@@ -2,6 +2,10 @@ import com.rabbitmq.client.*
 import com.rabbitmq.client.impl.ForgivingExceptionHandler
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
+import org.eclipse.egit.github.core.client.GitHubClient
+import org.eclipse.egit.github.core.service.ContentsService
+import org.eclipse.egit.github.core.service.DataService
+import org.eclipse.egit.github.core.service.RepositoryService
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.Table
@@ -64,8 +68,11 @@ class MyArgs(parser: ArgParser) {
 
     val logger by parser.storing("logger's system path")
     val db by parser.storing("name of the database to store information about projects")
-    val user by parser.storing("login for database to store information about projects")
-    val password by parser.storing("password for database to store information about projects")
+    val dbUser by parser.storing("login for database to store information about projects")
+    val dbPassword by parser.storing("password for database to store information about projects")
+
+    val user by parser.storing("login for github authentication")
+    val password by parser.storing("password for github authentication")
 
     val folder by parser.storing("system folder to store projects' code")
 
@@ -102,12 +109,18 @@ fun main(args: Array<String>) {
     val jdbc = "jdbc:mysql://10.100.174.242:3306/${parsedArgs!!.db}?serverTimezone=UTC"
     val driver = "com.mysql.cj.jdbc.Driver"
 
-    val dbConnection = Database.connect(jdbc, user = parsedArgs!!.user, password = parsedArgs!!.password, driver = driver)
+    val dbConnection = Database.connect(jdbc, user = parsedArgs!!.dbUser, password = parsedArgs!!.dbPassword, driver = driver)
 
     transaction {
         create(GitProject, GitProjectVersion, ExploredLibrary, ExploredLibraryVersion, GitProjectExploredLibrary)
     }
     transaction { } // ?
+
+    val client = GitHubClient()
+
+    client.setCredentials(parsedArgs!!.user, parsedArgs!!.password)
+
+    val dataService = DataService(client)
 
     var factory = ConnectionFactory()
 
@@ -134,32 +147,15 @@ fun main(args: Array<String>) {
         }
     }
 
-
-    //factory.setRequestedHeartbeat(5);
-    //factory.connectionTimeout=5;
-    // TODO
-    //factory.shutdownTimeout = 10;
-
     val connection = factory.newConnection()
 
     channel = connection.createChannel()
-
-    //connection.setHeartbeat(5);
-
-    //TODO
-    /* println(connection.heartbeat)
-
-     println(factory.connectionTimeout)
-
-     channel!!.addShutdownListener { cause: ShutdownSignalException? ->
-         println(cause!!.message)
-     }*/
 
     val args = HashMap<String, Any>()
     args.put("x-max-length", 200)
     channel!!.queueDeclare(TASKS_QUEUE_NAME, false, false, false, args)
     channel!!.queueDeclare(ACK_QUEUE_NAME, false, false, false, null)
 
-    val consumer = GithubConsumer(connection, parsedArgs)
+    val consumer = GithubConsumer(connection, checkNotNull(parsedArgs), dataService)
     channel!!.basicConsume(TASKS_QUEUE_NAME, false, consumer)
 }
